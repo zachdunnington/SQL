@@ -1,0 +1,71 @@
+# Build a SQL database
+
+DROP TABLE state CASCADE CONSTRAINTS;
+CREATE TABLE state
+(stateabb varchar2(2) PRIMARY KEY,
+stateName VARCHAR2(30));
+ 
+DROP TABLE Customer CASCADE CONSTRAINTS;
+CREATE TABLE Customer 
+(UserID INT not null, LogName VARCHAR(20),
+LogPass VARCHAR(20), Email VARCHAR(50),
+Fname VARCHAR(20), Lname VARCHAR(20),
+StreetNum INT, Street VARCHAR(20),
+City VARCHAR(20), StateABB VARCHAR(2),
+Pcode INT, Phone INT,
+CONSTRAINT Cust_PK Primary Key (UserID),
+CONSTRAINT Cust_FK Foreign Key (StateAbb)
+REFERENCES State (StateAbb));
+
+DROP TABLE Product CASCADE CONSTRAINTS; 
+CREATE TABLE Product (ProdID INT not NULL,
+ProdName VARCHAR(20),
+ProdDesc VARCHAR(50), ReleaseDate DATE,
+StandPrice DECIMAL, Type VARCHAR(20),
+CONSTRAINT Prod_PK Primary Key (ProdID));
+
+DROP TABLE Vendor CASCADE CONSTRAINTS;
+CREATE TABLE Vendor
+(VenID INT not NULL, 
+Name VARCHAR(20), StreetNum INT,
+Street VARCHAR(20), City VARCHAR(20),
+StateAbb VARCHAR(2), Pcode INT, 
+Phone INT, Email VARCHAR(50),
+CONSTRAINT Ven_PK Primary Key (VenID),
+CONSTRAINT Ven_FK Foreign Key (StateAbb)
+REFERENCES State (StateAbb));      
+
+DROP TABLE Supplies CASCADE CONSTRAINTS; 
+CREATE TABLE Supplies 
+(VenID INT, ProdID INT,
+DateofContract DATE,
+Contract VARCHAR(50),
+CONSTRAINT Supp_PK Primary KEY (VenID),
+CONSTRAINT Supp_FK Foreign Key (ProdID)
+REFERENCES Product (ProdID));    
+
+DROP TABLE Shipment CASCADE CONSTRAINTS; 
+CREATE TABLE Shipment
+(ShipID INT, UserID INT,
+ShipDate DATE, Type VARCHAR(50),
+CONSTRAINT Ship_PK PRIMARY KEY (ShipID),
+CONSTRAINT Ship_User_FK FOREIGN KEY(UserID)
+REFERENCES Customer (UserID));
+
+DROP TABLE Ord CASCADE CONSTRAINTS;
+CREATE TABLE Ord 
+(OrderID INT, OrderDate Date,
+UserID int, shipid int,
+CONSTRAINT Order_PK Primary key (OrderID),
+CONSTRAINT Order_FK Foreign Key (UserID)
+REFERENCES Customer (UserID),
+Constraint Order_Ship_FK FOREIGN KEY(ShipID) 
+REFERENCES Shipment (ShipID)); 	
+
+DROP TABLE OrderLine CASCADE CONSTRAINTS; 
+CREATE TABLE OrderLine 
+(OrderID INT, ProdID INT, 
+Quanity INT, Discount DECIMAL,
+CONSTRAINT OrderLine_PK Primary key (OrderID),
+CONSTRAINT OrderLine_FK Foreign KEy (ProdID)
+REFERENCES Product (ProdID));
